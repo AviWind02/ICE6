@@ -22,25 +22,43 @@ class MainActivity : AppCompatActivity() {
         //val contactListAssetString = getTextFromAssets(this, "contacts.json")
        //Log.i("contact_list_assets", contactListAssetString)
 
-       val CL =  deJSONData();
+       val CL =  deJSONDataAA();
         if(CL != null)
         {
             for(C in CL)
             {
-                Log.i("Looped", C.toString())
+                Log.i("Assets", C.toString())
+            }
+        }
+        val CL2 =  deJSONData();
+        if(CL2 != null)
+        {
+            for(C2 in CL2)
+            {
+                Log.i("Raw", C2.toString())
             }
         }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun deJSONData(): String
+    fun deJSONData(): List<ContactModel>?
     {
         val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val List = Types.newParameterizedType(List::class.java, ContactModel::class.java)
-        val adapter: JsonAdapter<List<ContactModel>> = moshi.adapter(List)
+        val listType = Types.newParameterizedType(List::class.java, ContactModel::class.java)
+        val adapter: JsonAdapter<List<ContactModel>> = moshi.adapter(listType)
         val contactListRawString = getTextFromResource(this, R.raw.contacts)
-        val contactList : List<ContactModel>? = adapter.fromJson(contactListRawString)
-        return contactList.toString();
+        val contactList: List<ContactModel>? = adapter.fromJson(contactListRawString)
+        return contactList
+    }
+    @OptIn(ExperimentalStdlibApi::class)
+    fun deJSONDataAA(): List<ContactModel>?
+    {
+        val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+        val listType = Types.newParameterizedType(List::class.java, ContactModel::class.java)
+        val adapter: JsonAdapter<List<ContactModel>> = moshi.adapter(listType)
+        val contactListAssetString = getTextFromAssets(this, "contacts.json")
+        val contactList: List<ContactModel>? = adapter.fromJson(contactListAssetString)
+        return contactList
     }
 
     fun getTextFromResource(context: Context, resourceId: Int): String
